@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector> 
 #include "student.h"
 
 using namespace std;
@@ -20,9 +21,23 @@ void AfisareMeniu()
    // Am  creat meniul pe care il va vedea utilizatorul
 }
 
+
+void AfisareStudenti(const vector<Student> studenti){
+  if (studenti.empty()){
+        cout << "Nu exista niciun student inregistrat." << endl;
+        return;
+  }
+
+  cout << "Lista studenti:" << endl;
+  for (size_t i = 0; i < studenti.size(); i++){
+        cout << "ID: " << studenti[i].getId() << " | Nume: " << studenti[i].getNume() << endl;
+  }
+}
+
+
 int main() {
    int optiune = -1; 
-   Student s;
+   vector<Student> studenti;
 
    // Verificam daca optiunea introdusa este corecta
    while (true){
@@ -61,10 +76,10 @@ int main() {
         cout << "Introduceti numele: ";
         getline(cin, nume);
 
-        s.setId(id);
-        s.setNume(nume);
+        Student s(id, nume);
+        studenti.push_back(s);
 
-        cout << "Student adaugat: " << s.getId() << " " << s.getNume() << endl;
+        cout << "Student adaugat. Numar total de studenti: " << studenti.size() << endl;
         break;
     }
 
@@ -78,7 +93,7 @@ int main() {
             break;
 
     case 4:
-            cout << "[TODO] Aici se vor afisa toate notele" << endl;
+            AfisareStudenti(studenti);
             break;
 
     case 5:
