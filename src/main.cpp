@@ -2,6 +2,7 @@
 #include <string>
 #include <vector> 
 #include "student.h"
+#include "materii.h"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ void AfisareMeniu()
    cout <<" 1. Adauga student " << endl;
    cout <<" 2. Adauga materie " << endl;
    cout <<" 3. Adauga nota " << endl;
-   cout <<" 4. Afiseaza toate notele " << endl;
+   cout <<" 4. Afiseaza toti studentii " << endl;
    cout <<" 5. Calculeaza media studentului " << endl;
    cout <<" 0. Iesire" << endl;
    cout <<" Alegeti o optiune " << endl;
@@ -23,7 +24,7 @@ void AfisareMeniu()
 
 
 void AfisareStudenti(const vector<Student> studenti){
-  if (studenti.empty()){
+  if (studenti.empty()) {
         cout << "Nu exista niciun student inregistrat." << endl;
         return;
   }
@@ -33,19 +34,30 @@ void AfisareStudenti(const vector<Student> studenti){
         cout << "ID: " << studenti[i].getId() << " | Nume: " << studenti[i].getNume() << endl;
   }
 }
+bool materieExistenta(const vector<Materie>& materii, const std::string& numeCautat) {
+    for (size_t i = 0; i < materii.size(); i++) {
+        if (materii[i].getNume() == numeCautat) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 
 int main() {
    int optiune = -1; 
    vector<Student> studenti;
+   vector<Materie> materii;
 
    // Verificam daca optiunea introdusa este corecta
-   while (true){
-    AfisareMeniu();
+   while (true) {
+   AfisareMeniu();
+
+   cin >> optiune; // Se alege optiunea dorita
     
-    cin >> optiune; // Se alege optiunea dorita
-    
-    if (cin.fail()){
+   if (cin.fail()) {
+
         cout<<"Optiunea introdusa este invalida. Incercati din nou." << endl;
 
         // Curatam eroarea si stergem ce a ramas in buffer
@@ -56,56 +68,80 @@ int main() {
     }
    
 
-   if (optiune == 0){
+   if (optiune == 0) {
 
-    cout<<"Iesire din aplicatie." << endl;
-    break;
+      cout<<"Iesire din aplicatie." << endl;
+      break;
 
    }
-   switch (optiune){
+   switch (optiune) {
 
-    case 1:{
-                
-        int id;
-        std::string nume;
+    case 1: {
+                 //Adaugare studenti               
+                int id;
+                std::string nume;
 
-        cout << "Introduceti id-ul: ";
-        cin >> id;
-        cin.ignore(1000, '\n');
+                //Se introduc datele studentului
+                cout << "Introduceti id-ul: ";
+                cin >> id;
+                cin.ignore(1000, '\n');
 
-        cout << "Introduceti numele: ";
-        getline(cin, nume);
+                cout << "Introduceti numele: ";
+                getline(cin, nume);
 
-        Student s(id, nume);
-        studenti.push_back(s);
+                //Se salveaza datele studentului
+                Student s(id, nume);
+                studenti.push_back(s); //Se adauga in vector
 
-        cout << "Student adaugat. Numar total de studenti: " << studenti.size() << endl;
-        break;
+                cout << "Student adaugat. Numar total de studenti: " << studenti.size() << endl;
+                break;
+         }
+
+    
+    case 2: {
+                int id;
+                std::string nume;
+
+                cout << "Introduceti id-ul materiei: ";
+                cin >> id;
+                cin.ignore(1000, '\n');
+
+                cout << "Introduceti denumirea materiei: ";
+                getline(cin, nume);
+
+                // Verificam daca exista deja materia pe care dorim sa o introducem
+                if (materieExistenta(materii, nume)) {
+                cout << "Exista deja aceasta materie. Alegeti alta." << endl;
+                break;
     }
 
-    
-    case 2:
-            cout << "[TODO] Aici se va adauga o materie" << endl;
-            break;
-    
+                Materie m(id, nume);
+                materii.push_back(m);
+
+                cout << "Materie adaugata. Numar total de materii: " << materii.size() << endl;
+                break;
+
+                // [TODO] afisare materii
+        }
+
     case 3:
-            cout << "[TODO] Aici se va adauga o nota" << endl;
-            break;
+                cout << "[TODO] Aici se va adauga o nota" << endl;
+                break;
 
     case 4:
-            AfisareStudenti(studenti);
-            break;
+                AfisareStudenti(studenti);
+                break;
 
     case 5:
-            cout << "[TODO] Aici se va calcula media unui student" << endl;
-            break;
+                cout << "[TODO] Aici se va calcula media unui student" << endl;
+                break;
 
     default:
-            cout << "Optiune invalida. Incercati din nou" << endl;
-            break;
+                cout << "Optiune invalida. Incercati din nou" << endl;
+                break;
    }
 
-   cout<<endl;
+   cout << endl;
 }
    return 0;
 }
