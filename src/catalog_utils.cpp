@@ -24,6 +24,7 @@ void AfisareMeniu()
 }
 
 
+// Afiseaza toti studentii si, pentru fiecare, afiseaza notele pe materii (daca exista)
 void AfisareStudenti(const vector<Student>& studenti, const vector<Nota>& note) {
 
     for (size_t i = 0; i < studenti.size(); i++) {
@@ -58,7 +59,7 @@ bool studentExistent(const vector<Student>& studenti, const std::string& numeCau
     return false;
 }
 
-
+// Verifica daca exista deja un student cu un anumit nume in vectorul de studenti
 bool materieExistenta(const vector<Materie>& materii, const std::string& numeCautat) {
     for (size_t i = 0; i < materii.size(); i++) {
         if (materii[i].getNume() == numeCautat) {
@@ -69,6 +70,7 @@ bool materieExistenta(const vector<Materie>& materii, const std::string& numeCau
 }
 
 
+// Verifica daca exista deja o materie cu un anumit nume in vectorul de materii
 void AfisareMaterii(const vector<Materie>& materii) {
     if (materii.empty()) {
         cout << "Nu exista nicio materie inregistrata." << endl;
@@ -83,6 +85,7 @@ void AfisareMaterii(const vector<Materie>& materii) {
 }
 
 
+// Media studentului
 double CalculeazaMediaStudentului(const vector<Nota>& note, const std::string& numeStudent) {
     int suma = 0;
     int numarNote = 0;
@@ -102,6 +105,7 @@ double CalculeazaMediaStudentului(const vector<Nota>& note, const std::string& n
 }
 
 
+// Calculeaza media pentru o anumita materie (media tuturor notelor la acea materie)
 double CalculeazaMediaMateriei(const std::vector<Nota>& note, const std::string& numeMaterie) {
     int suma = 0, nr = 0;
     for (const auto& n : note) {
@@ -114,6 +118,8 @@ double CalculeazaMediaMateriei(const std::vector<Nota>& note, const std::string&
     return static_cast<double>(suma) / nr;
 }
 
+
+// Calculeaza media generala (media tuturor notelor din lista)
 double CalculeazaMediaGenerala(const std::vector<Nota>& note) {
     if (note.empty()) return 0.0;
     int suma = 0;
@@ -121,6 +127,8 @@ double CalculeazaMediaGenerala(const std::vector<Nota>& note) {
     return static_cast<double>(suma) / note.size();
 }
 
+
+//  Afiseaza statistici: materia cu media cea mai mare si materia cu media cea mai mica
 void AfiseazaCeaMaiBunaSiCeaMaiSlabaMaterie(const std::vector<Materie>& materii,
                                             const std::vector<Nota>& note) {
     if (materii.empty() || note.empty()) {
@@ -209,13 +217,14 @@ void IncarcaNoteCSV(vector<Nota>& note) {
     string line;
     getline(f, line); // header
     while (getline(f, line)) {
-        if (line.empty()) continue;
+        if (line.empty()) continue; // Ignoram liniile goale 
         istringstream iss(line);
         string student, materie, notaStr;
         getline(iss, student, ',');
         getline(iss, materie, ',');
         getline(iss, notaStr);
         note.push_back(Nota(student, materie, stoi(notaStr)));
-
-}
+    }
+    // Citim fisierul CSV: sarim peste prima linie (header), apoi parsam fiecare rand in campuri
+    // (student, materie, nota) si incarcam in vectorul de note.
 }
