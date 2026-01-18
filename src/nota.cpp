@@ -1,4 +1,4 @@
-#include "note.h"
+#include "nota.h"
 
 Nota::Nota() : numeStudent(""), numeMaterie(""), nota(0) {}
 

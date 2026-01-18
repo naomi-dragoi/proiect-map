@@ -8,9 +8,10 @@ int Materie::getId() const {
     return id;
 } 
 
-std::string Materie::getNume() const{
+const std::string& Materie::getNume() const {
     return nume;
 }
+
 
 void Materie::setId(int idNou) {
     id = idNou;

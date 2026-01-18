@@ -1,4 +1,4 @@
-#include "Student.h"
+#include "student.h"
 
 // Constructor fara parametri
 Student::Student() : id(0), nume("") {}
@@ -12,7 +12,7 @@ int Student::getId() const {
 }
 
 // Getter pentru nume
-std::string Student::getNume() const {
+const std::string& Student::getNume() const {
     return nume;
 }
 

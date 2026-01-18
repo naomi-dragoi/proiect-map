@@ -1,106 +1,13 @@
 #include <iostream>
 #include <string>
 #include <vector> 
+#include <limits>
 #include "student.h"
 #include "materii.h"
-#include "note.h"
+#include "nota.h"
+#include "catalog_utils.h"
 
 using namespace std;
-
-
-void AfisareMeniu()
-{
-   cout <<"-----------------------------------" << endl;
-   cout <<"  APLICATIE DE GESTIONARE A NOTELOR" << endl; 
-   cout <<"-----------------------------------" << endl;
-   cout <<" 1. Adauga student " << endl;
-   cout <<" 2. Adauga materie " << endl;
-   cout <<" 3. Adauga nota " << endl;
-   cout <<" 4. Afiseaza toti studentii " << endl;
-   cout <<" 5. Calculeaza media studentului " << endl;
-   cout <<" 0. Iesire" << endl;
-   cout <<" Alegeti o optiune " << endl;
-   // Am  creat meniul pe care il va vedea utilizatorul
-}
-
-
-void AfisareStudenti(const vector<Student>& studenti, const vector<Nota>& note) {
-
-    for (size_t i = 0; i < studenti.size(); i++) {
-        const std::string& numeStudent = studenti[i].getNume();
-        cout << "Student: " << numeStudent << endl;
-
-        bool areNote = false;
-
-        for (size_t j = 0; j < note.size(); j++) {
-            if (note[j].getNumeStudent() == numeStudent) {
-                cout << "  - " << note[j].getNumeMaterie()
-                     << ": " << note[j].getNota() << endl;
-                areNote = true;
-            }
-        }
-
-        if (!areNote) {
-            cout << "  (nu are note)" << endl;
-        }
-        cout << endl;
-    }
-}
-
-
-
-bool studentExistent(const vector<Student>& studenti, const std::string& numeCautat) {
-    for (size_t i = 0; i < studenti.size(); i++) {
-        if (studenti[i].getNume() == numeCautat) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
-bool materieExistenta(const vector<Materie>& materii, const std::string& numeCautat) {
-    for (size_t i = 0; i < materii.size(); i++) {
-        if (materii[i].getNume() == numeCautat) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
-void AfisareMaterii(const vector<Materie>& materii) {
-    if (materii.empty()) {
-        cout << "Nu exista nicio materie inregistrata." << endl;
-        return;
-    }
-
-    cout << "Lista materii:" << endl;
-    for (size_t i = 0; i < materii.size(); i++) {
-        cout << "ID: " << materii[i].getId()
-             << " | Nume: " << materii[i].getNume() << endl;
-    }
-}
-
-
-double CalculeazaMediaStudentului(const vector<Nota>& note, const std::string& numeStudent) {
-    int suma = 0;
-    int numarNote = 0;
-
-    for (size_t i = 0; i < note.size(); i++) {
-        if (note[i].getNumeStudent() == numeStudent) {
-            suma += note[i].getNota();
-            numarNote++;
-        }
-    }
-
-    if (numarNote == 0) {
-        return 0.0; // student fara note
-    }
-
-    return static_cast<double>(suma) / numarNote;
-}
-
 
 
 int main() {
@@ -109,6 +16,11 @@ int main() {
    vector<Materie> materii;
    vector<Nota> note;
    
+    IncarcaStudentiCSV(studenti);
+    IncarcaMateriiCSV(materii);
+    IncarcaNoteCSV(note);
+
+
    while (true) {
    AfisareMeniu();
 
@@ -121,16 +33,18 @@ int main() {
 
         // Curatam eroarea si stergem ce a ramas in buffer
         cin.clear();
-        cin.ignore(1000, '\n');
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         continue;
     }
    
 
    if (optiune == 0) {
-
-      cout<<"Iesire din aplicatie." << endl;
-      break;
+        SalveazaStudentiCSV(studenti);
+        SalveazaMateriiCSV(materii);
+        SalveazaNoteCSV(note);
+        cout << "Date salvate in CSV. Iesire din aplicatie.\n";
+        break;
 
    }
    switch (optiune) {
@@ -143,10 +57,16 @@ int main() {
                 // Se introduc datele studentului
                 cout << "Introduceti id-ul: ";
                 cin >> id;
-                cin.ignore(1000, '\n');
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-                cout << "Introduceti numele: ";
-                getline(cin, nume);
+               do {
+                     cout << "Introduceti numele: ";
+                    getline(cin, nume);
+
+                    if (studentExistent(studenti, nume)) {
+                        cout << "Exista deja un student cu acest nume. Incercati alt nume.\n";
+                     }
+                } while (studentExistent(studenti, nume));
 
                 // Se salveaza datele studentului
                 Student s(id, nume);
@@ -159,21 +79,25 @@ int main() {
     
     case 2: {
                 // Adaugare materii
+
+                AfisareMaterii(materii);
+                cout << endl;
+
                 int id;
                 std::string nume;
 
                 cout << "Introduceti id-ul materiei: ";
                 cin >> id;
-                cin.ignore(1000, '\n');
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-                cout << "Introduceti denumirea materiei: ";
-                getline(cin, nume);
+                do {
+                 cout << "Introduceti denumirea materiei: ";
+                 getline(cin, nume);
 
-                // Verificam daca exista deja materia pe care dorim sa o introducem
-                if (materieExistenta(materii, nume)) {
-                cout << "Exista deja aceasta materie. Alegeti alta." << endl;
-                break;
-    }
+                 if (materieExistenta(materii, nume)) {
+                    cout << "Exista deja aceasta materie. Alegeti alta." << endl;
+                }
+                } while (materieExistenta(materii, nume));
 
                 Materie m(id, nume);
                 materii.push_back(m);
@@ -197,7 +121,7 @@ int main() {
                 std::string numeStudent, numeMaterie;
                 int nota;
 
-                cin.ignore(1000, '\n');
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
                 cout << "Introduceti numele studentului: ";
                 getline(cin, numeStudent);
@@ -238,8 +162,9 @@ int main() {
          }
 
     case 5: {
+                AfisareStudenti(studenti, note);
                 std::string numeStudent;
-                cin.ignore(1000, '\n');
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
                 cout << "Introduceti numele studentului pentru care calculati media: ";
                 getline(cin, numeStudent);
@@ -256,15 +181,44 @@ int main() {
                     cout << "Media lui " << numeStudent << " este: " << media << endl;
                 }
                 break;
-}
+        }
 
+    case 6: {
+                AfisareMaterii(materii);
+                cout << endl;
+
+                string numeMaterie;
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cout << "Introduceti denumirea materiei: ";
+                getline(cin, numeMaterie);
+
+                if (!materieExistenta(materii, numeMaterie)) {
+                    cout << "Nu exista materie cu aceasta denumire.\n";
+                    break;
+                }
+
+                double media = CalculeazaMediaMateriei(note, numeMaterie);
+                if (media == 0.0) cout << "Materia nu are note inca.\n";
+                else cout << "Media la " << numeMaterie << " este: " << media << "\n";
+                break;
+        }
+
+    case 7: {
+                double mg = CalculeazaMediaGenerala(note);
+                if (mg == 0.0) cout << "Nu exista note inca.\n";
+                else cout << "Media generala (toate notele) este: " << mg << "\n";
+                break;
+        }
+
+    case 8: {
+                AfiseazaCeaMaiBunaSiCeaMaiSlabaMaterie(materii, note);
+                break;
+        }
 
     default:
                 cout << "Optiune invalida. Incercati din nou" << endl;
                 break;
-   }
-
-
-}
+        }
+    }
    return 0;
 }

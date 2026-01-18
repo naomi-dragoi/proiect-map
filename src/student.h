@@ -15,7 +15,7 @@ public:
 
     // Getteri pentru citire
     int getId() const;
-    std::string getNume() const;
+    const std::string& getNume() const;
 
     // Getteri pentru modificari
     void setId(int idNou);
