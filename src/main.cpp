@@ -24,17 +24,29 @@ void AfisareMeniu()
 }
 
 
-void AfisareStudenti(const vector<Student> studenti){
-  if (studenti.empty()) {
-        cout << "Nu exista niciun student inregistrat." << endl;
-        return;
-  }
+void AfisareStudenti(const vector<Student>& studenti, const vector<Nota>& note) {
 
-  cout << "Lista studenti:" << endl;
-  for (size_t i = 0; i < studenti.size(); i++){
-        cout << "ID: " << studenti[i].getId() << " | Nume: " << studenti[i].getNume() << endl;
-  }
+    for (size_t i = 0; i < studenti.size(); i++) {
+        const std::string& numeStudent = studenti[i].getNume();
+        cout << "Student: " << numeStudent << endl;
+
+        bool areNote = false;
+
+        for (size_t j = 0; j < note.size(); j++) {
+            if (note[j].getNumeStudent() == numeStudent) {
+                cout << "  - " << note[j].getNumeMaterie()
+                     << ": " << note[j].getNota() << endl;
+                areNote = true;
+            }
+        }
+
+        if (!areNote) {
+            cout << "  (nu are note)" << endl;
+        }
+        cout << endl;
+    }
 }
+
 
 
 bool studentExistent(const vector<Student>& studenti, const std::string& numeCautat) {
@@ -68,6 +80,25 @@ void AfisareMaterii(const vector<Materie>& materii) {
         cout << "ID: " << materii[i].getId()
              << " | Nume: " << materii[i].getNume() << endl;
     }
+}
+
+
+double CalculeazaMediaStudentului(const vector<Nota>& note, const std::string& numeStudent) {
+    int suma = 0;
+    int numarNote = 0;
+
+    for (size_t i = 0; i < note.size(); i++) {
+        if (note[i].getNumeStudent() == numeStudent) {
+            suma += note[i].getNota();
+            numarNote++;
+        }
+    }
+
+    if (numarNote == 0) {
+        return 0.0; // student fara note
+    }
+
+    return static_cast<double>(suma) / numarNote;
 }
 
 
@@ -158,7 +189,7 @@ int main() {
                 break;
             }
 
-                AfisareStudenti(studenti);
+                AfisareStudenti(studenti, note);
 
                 AfisareMaterii(materii);
                 cout << endl;
@@ -200,14 +231,33 @@ int main() {
         }
 
 
-    case 4:
-                AfisareStudenti(studenti);
+    case 4: {
+                AfisareStudenti(studenti, note);
                 break;
-                // [TODO] afisare notele studentului
 
-    case 5:
-                cout << "[TODO] Aici se va calcula media unui student" << endl;
+         }
+
+    case 5: {
+                std::string numeStudent;
+                cin.ignore(1000, '\n');
+
+                cout << "Introduceti numele studentului pentru care calculati media: ";
+                getline(cin, numeStudent);
+
+                if (!studentExistent(studenti, numeStudent)) {
+                    cout << "Nu exista student cu acest nume." << endl;
+                    break;
+                }
+
+                double media = CalculeazaMediaStudentului(note, numeStudent);
+                if (media == 0.0) {
+                    cout << numeStudent << " nu are note inca." << endl;
+                 } else {
+                    cout << "Media lui " << numeStudent << " este: " << media << endl;
+                }
                 break;
+}
+
 
     default:
                 cout << "Optiune invalida. Incercati din nou" << endl;
