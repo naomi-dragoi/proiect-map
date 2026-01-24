@@ -1,8 +1,8 @@
 #include "nota.h"
 
-Nota::Nota() : numeStudent(""), numeMaterie(""), nota(0) {}
+Nota::Nota() : numeStudent(""), numeMaterie(""), nota(0.0) {}
 
-Nota::Nota(const std::string& numeStudent, const std::string& numeMaterie, int nota)  
+Nota::Nota(const std::string& numeStudent, const std::string& numeMaterie, double nota)  
             : numeStudent(numeStudent), numeMaterie(numeMaterie), nota(nota) {}
 
 std::string Nota::getNumeStudent() const {
@@ -13,7 +13,7 @@ std::string Nota::getNumeMaterie() const {
     return numeMaterie;
 }
 
-int Nota::getNota() const {
+double Nota::getNota() const {
     return nota;
 }
 
@@ -25,6 +25,6 @@ void Nota::setNumeMaterie(const std::string& numeNou) {
     numeMaterie = numeNou;
 }
 
-void Nota::setNota(int notaNoua) {
+void Nota::setNota(double notaNoua) {
     nota = notaNoua;
 }

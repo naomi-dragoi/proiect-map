@@ -119,7 +119,7 @@ int main() {
                 cout << endl;
 
                 std::string numeStudent, numeMaterie;
-                int nota;
+                double nota;
 
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -139,11 +139,11 @@ int main() {
                 break;
                 }
 
-                cout << "Introduceti valoarea notei (1-10): ";
+                cout << "Introduceti valoarea notei (1.0 - 10.0): ";
                 cin >> nota;
 
                 if (nota < 1 || nota > 10) {
-                    cout << "Nota invalida. Trebuie sa fie intre 1 si 10." << endl;
+                    cout << "Nota invalida. Trebuie sa fie intre 1.0 si 10.0" << endl;
                 break;
                 }
 
@@ -214,6 +214,32 @@ int main() {
                 AfiseazaCeaMaiBunaSiCeaMaiSlabaMaterie(materii, note);
                 break;
         }
+    
+    case 9: {
+                ListeazaNoteFiltrate(note, studenti, materii);
+                break;
+        }
+
+    case 10: {
+                double prag;
+                cout << "Introduceti pragul (ex: 5.0): ";
+                cin >> prag;
+                cin.ignore(10000, '\n');
+    
+                ListeazaStudentiSubPrag(studenti, note, prag);
+                break;
+        }
+
+    case 11: {
+                AfisareStudenti(studenti, note);  // arată studenții disponibili
+                cout << "\nNume student pentru raport: ";
+                string numeStudent;
+                cin.ignore(10000, '\n');
+                getline(cin, numeStudent);
+    
+                RaportStudent(studenti, note, materii, numeStudent);
+                break;
+        }   
 
     default:
                 cout << "Optiune invalida. Incercati din nou" << endl;

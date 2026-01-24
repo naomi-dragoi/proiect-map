@@ -20,6 +20,13 @@ double CalculeazaMediaMateriei(const std::vector<Nota>& note, const std::string&
 double CalculeazaMediaGenerala(const std::vector<Nota>& note);
 void AfiseazaCeaMaiBunaSiCeaMaiSlabaMaterie(const std::vector<Materie>& materii, const std::vector<Nota>& note);
 
+// Filtrare studenti/note dupa anumite criterii
+void ListeazaNoteFiltrate(const std::vector<Nota>& note, const std::vector<Student>& studenti, const std::vector<Materie>& materii);
+// Listeaza studentii cu media sub un prag dat
+void ListeazaStudentiSubPrag(const std::vector<Student>& studenti, const std::vector<Nota>& note, double prag);
+// Raport complet pentru un student (note pe materii + medie)
+void RaportStudent(const std::vector<Student>& studenti, const std::vector<Nota>& note, const std::vector<Materie>& materii, const std::string& numeStudent);
+
 // Import CSV 
 void IncarcaStudentiCSV(std::vector<Student>& studenti);
 void IncarcaMateriiCSV(std::vector<Materie>& materii);
